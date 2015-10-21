@@ -1,0 +1,90 @@
+#!/usr/bin/python
+
+# TODO: documentation
+
+from argparse import ArgumentParser, Namespace
+from collections import OrderedDict
+from math import ceil, log
+from random import choice
+from string import ascii_lowercase, ascii_uppercase, digits, hexdigits, octdigits, punctuation
+
+symbol_sets = OrderedDict([
+	('upper', ('u', ascii_uppercase, 'uppercase')),
+	('lower', ('l', ascii_lowercase, 'lowercase')),
+	('digit', ('d', digits, 'decimal digits')),
+	('hex', ('x', hexdigits, 'hex digits')),
+	('oct', ('o', octdigits, 'octal digits')),
+	('punc', ('p', punctuation, 'punctuation')),
+	('spaces', ('s', ' ', 'spaces')),
+	('uri', ('w', ascii_uppercase + ascii_lowercase + digits + '-._~', 'URI unreserved symbols')),
+	('domain', ('n', ascii_lowercase + '-', 'domain name unreserved symbols'))
+])
+
+class OrderedNamespace(Namespace):
+    def __init__(self, **kwargs):
+        self.__dict__['order'] = []
+        super(OrderedNamespace, self).__init__(**kwargs)
+    def __setattr__(self, attr, value):
+        self.__dict__['order'].append(attr)
+        super(OrderedNamespace, self).__setattr__(attr, value)
+
+parser = ArgumentParser(description='pw generates random strings based on your specifications. By default, pw generates 256-bit passwords using random printable ASCII characters.')
+parser.add_argument('-b', '--bits', type=int, default=256, help='bits of entropy per password; default is 128', metavar='bits')
+parser.add_argument('-n', '--number', type=int, default=1, help='number of passwords to generate; default is 1', metavar='num')
+parser.add_argument('-s', '--size', type=int, default=0, help='number of symbols per password; overrides bits', metavar='size')
+for name, (code, symbol_set, friendly) in symbol_sets.items():
+	parser.add_argument('-a%s' % code, '--add-%s' % name, action='store_true', help='add %s to the set' % friendly)
+for name, (code, symbol_set, friendly) in symbol_sets.items():
+	parser.add_argument('-r%s' % code, '--remove-%s' % name, action='store_true', help='remove %s from the set' % friendly)
+parser.add_argument('-ac', '--add-custom', action='append', metavar='symbols', help='add custom symbols to the set')
+parser.add_argument('-rc', '--remove-custom', action='append', metavar='symbols', help='remove custom symbols to the set')
+parser.add_argument('-e', '--empty', action='store_true')
+parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose logging')
+
+args = parser.parse_args(None, OrderedNamespace())
+
+if args.empty:
+	symbols = ''
+else:
+	symbols = ascii_uppercase + ascii_lowercase + digits + punctuation + ' '
+
+first_run = set()
+
+for arg in args.order:
+	if arg not in first_run:
+		first_run.add(arg)
+		continue
+	if arg.startswith('add'):
+		if arg == 'add_custom':
+			if args.add_custom:
+				symbols += args.add_custom.pop(0)
+		else:
+			symbols += symbol_sets[arg[4:]][1]
+	elif arg.startswith('remove'):
+		if arg == 'remove_custom':
+			if args.remove_custom:
+				remove_custom = args.remove_custom.pop(0);
+				symbols = ''.join(symbol for symbol in symbols if symbol not in remove_custom)
+		else:
+			symbols = ''.join(symbol for symbol in symbols if symbol not in symbol_sets[arg[7:]][1])
+
+if len(symbols) == 0:
+	print('No symbols were allowed, so no password was generated.')
+	exit(1)
+
+symbol_entropy = log(len(symbols), 2)
+
+if args.size != 0:
+	count = args.size
+else:
+	count = int(ceil(args.bits / symbol_entropy))
+
+if (args.verbose):
+	print('Symbol entropy: %f bits' % symbol_entropy)
+	print('Password entropy: %d bits' % (symbol_entropy * count))
+	print('Symbol set size: %d symbols' % len(symbols))
+	print('Password size: %d symbols' % count)
+	print()
+	
+for i in range(args.number):
+	print(''.join(choice(symbols) for _ in range(count)))

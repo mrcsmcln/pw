@@ -1,6 +1,26 @@
-# `pw`
+
+
+# pw
 
 `pw` is a **stupidly easy tool** that generates secure passwords based on your specifications. By default, `pw` generates 256-bit passwords using random printable ASCII symbols.
+
+## Table of contents
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [95% of the time](#95%25-of-the-time)
+  - [The other 5%](#the-other-5%25)
+    - [Removing symbol sets](#removing-symbol-sets)
+    - [Adding custom symbols](#adding-custom-symbols)
+    - [Removing custom symbols](#removing-custom-symbols)
+    - [Starting from scratch](#starting-from-scratch)
+    - [Changing the entropy](#changing-the-entropy)
+    - [Using size instead of entropy](#using-size-instead-of-entropy)
+    - [Generating multiple passwords](#generating-multiple-passwords)
+    - [Printing additional information](#printing-additional-information)
+    - [Using abbreviations](#using-abbreviations)
+    - [Seeing all the things](#seeing-all-the-things)
+    - [The one gotcha](#the-one-gotcha)
 
 ## Dependencies
 
@@ -147,3 +167,15 @@ To see all available symbol sets, like octal digits and URI unreserved symbols, 
 ```
 pw --help
 ```
+
+#### The one gotcha
+
+Be careful how you enter custom symbol strings via `--add-custom` and `--remove-custom`. You should always use single quotes (`'`) to wrap your custom symbol string, because some symbols like `!` and `\` are treated differently when they're wrapped in double quotes (`"`).
+
+If you need to use the single quote in your custom symbol string, do this:
+
+```
+pw --remove-custom '1234'"'"'5678'
+```
+
+As you can see above, we have `'1234'`, `"'"`, and `'6789'` together with no whitespace between them. This works because two strings with no whitespace between them are treated as a single string. See [here](http://stackoverflow.com/questions/1250079/how-to-escape-single-quotes-within-single-quoted-strings) for more information.

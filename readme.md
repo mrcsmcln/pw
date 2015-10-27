@@ -45,7 +45,7 @@ Assuming you're using Bash, you should now be able to run `pw` from anywhere in 
 
 ## Usage
 
-`pw`, as mentioned earlier, is *stupidly easy* to use. Read this document in its entirety and you'll be an expert.
+`pw`, as mentioned earlier, is *stupidly easy* to use. Read this short document and you'll be an expert.
 
 ### 95% of the time
 

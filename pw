@@ -28,8 +28,8 @@ class OrderedNamespace(Namespace):
         self.__dict__['order'].append(attr)
         super(OrderedNamespace, self).__setattr__(attr, value)
 
-parser = ArgumentParser(description='pw generates random strings based on your specifications. By default, pw generates 256-bit passwords using random printable ASCII characters.')
-parser.add_argument('-b', '--bits', type=int, default=256, help='bits of entropy per password; default is 128', metavar='bits')
+parser = ArgumentParser(description='pw generates secure passwords based on your specifications. By default, pw generates 256-bit passwords using random printable ASCII characters.')
+parser.add_argument('-b', '--bits', type=int, default=256, help='bits of entropy per password; default is 256', metavar='bits')
 parser.add_argument('-n', '--number', type=int, default=1, help='number of passwords to generate; default is 1', metavar='num')
 parser.add_argument('-s', '--size', type=int, default=0, help='number of symbols per password; overrides bits', metavar='size')
 for name, (code, symbol_set, friendly) in symbol_sets.items():

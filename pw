@@ -73,9 +73,12 @@ if len(symbols) == 0:
 	exit(1)
 
 symbol_entropy = log(len(symbols), 2)
-
+	
 if args.size != 0:
 	count = args.size
+elif symbol_entropy == 0:
+	print('The symbol entropy was zero, so no password was generated.')
+	exit(1)
 else:
 	count = int(ceil(args.bits / symbol_entropy))
 

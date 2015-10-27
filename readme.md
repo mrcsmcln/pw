@@ -8,8 +8,8 @@
 - [Dependencies](#dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [95% of the time](#95%25-of-the-time)
-  - [The other 5%](#the-other-5%25)
+  - [95% of the time](#95-of-the-time)
+  - [The other 5%](#the-other-5)
     - [Removing symbol sets](#removing-symbol-sets)
     - [Adding custom symbols](#adding-custom-symbols)
     - [Removing custom symbols](#removing-custom-symbols)
@@ -28,21 +28,20 @@ Python. Which you already have.
 
 ## Installation
 
-Use the code block below. If you don't have `curl`, use `wget`. If you don't have either of those, you can download `pw` [here](https://raw.githubusercontent.com/mrcsmcln/pw/master/pw). Just make sure to `cd` into your downloads directory before running the other commands.
+1. Download `pw`: `curl https://raw.githubusercontent.com/mrcsmcln/pw/master/pw > pw`
+2. Make `pw` executable: `chmod 755 pw`
+3. Run `pw`: `./pw`
 
-```
-curl https://raw.githubusercontent.com/mrcsmcln/pw/master/pw > pw
-chmod 755 pw
-./pw
-```
+Incredibly simple, no? If you don't have `curl`, use `wget`. If you don't have either of those, you can download `pw` [here](https://raw.githubusercontent.com/mrcsmcln/pw/master/pw). Just make sure to `cd` into your downloads directory before running the other commands.
 
-Incredibly simple, no? If you want to make things *even simpler*, follow these steps:
+If you want to make things *even simpler*, follow these steps:
 
 1. Make a home subdirectory called `bin`: `mkdir ~/bin`
 2. Move `pw` to that subdirectory: `mv pw ~/bin`
 3. Add that subdirectory to your shell's path: `echo 'export PATH=$PATH:~/bin' >> ~/.bashrc`
+4. Reload your shell's runcom: `source ~/.bashrc`
 
-Assuming you're using bash, you should now be able to run `pw` from anywhere in your shell.
+Assuming you're using Bash, you should now be able to run `pw` from anywhere in your shell. If you're using Z shell (zsh), you can use `~/.zshrc` instead of `~/.bashrc`.
 
 ## Usage
 

@@ -28,11 +28,11 @@ Python. Which you already have.
 
 ## Installation
 
-1. Download `pw`: `curl https://raw.githubusercontent.com/mrcsmcln/pw/master/pw > pw`
+1. Download `pw`: `curl -O https://raw.githubusercontent.com/mrcsmcln/pw/master/pw`
 2. Make `pw` executable: `chmod 755 pw`
 3. Run `pw`: `./pw`
 
-Incredibly simple, no? If you don't have `curl`, use `wget`. If you don't have either of those, you can download `pw` [here](https://raw.githubusercontent.com/mrcsmcln/pw/master/pw). Just make sure to `cd` into your downloads directory before running the other commands.
+Incredibly simple, no? If you don't have `curl`, use `wget` (without the `-O` flag). If you don't have either of those, you can download `pw` [here](https://raw.githubusercontent.com/mrcsmcln/pw/master/pw). Just make sure to `cd` into your downloads directory before running the other commands.
 
 If you want to make things *even simpler*, follow these steps:
 
@@ -100,7 +100,9 @@ pw --empty --add-upper --add-lower --add-digit --add-custom '!@#$%^&*'
 
 #### Changing the entropy
 
-The keen eye will notice that the prior examples, which don't specify a size, generate passwords of differing size. That's because we're using as many symbols as it takes to get to at least 256 bits of entropy. You could have a very long password, but if it's `p@ssword` repeated over and over, it wouldn't be hard to guess at all. So that's why we use bits by default.
+Don't know what password entropy is? Check [here](https://xkcd.com/936/) and [here](https://en.wikipedia.org/wiki/Password_strength#Entropy_as_a_measure_of_password_strength) for a primer.
+
+The keen eye will notice that the prior examples generate passwords of differing size. That's because we're using as many symbols as it takes to get to at least 256 bits of entropy. You could have a very long password, but if it's `p@ssword` repeated over and over, it wouldn't be hard to guess at all. So that's why we use bits by default.
 
 If you ever need to change the number of bits of entropy required, you can do so like this:
 

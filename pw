@@ -4,8 +4,8 @@ from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
 from math import ceil, log
 from random import choice
-from string import ascii_lowercase, ascii_uppercase,
-                   digits, hexdigits, octdigits, punctuation
+from string import (ascii_lowercase, ascii_uppercase,
+                   digits, hexdigits, octdigits, punctuation)
 
 # define our symbol sets in an easily-expandable way
 symbol_sets = OrderedDict([
@@ -75,8 +75,8 @@ if args.empty:
     symbols = ''
 else:
     # default symbol set
-    symbols = ascii_uppercase + ascii_lowercase +
-              digits + punctuation + ' '
+    symbols = (ascii_uppercase + ascii_lowercase + 
+              digits + punctuation + ' ')
 
 # the first run through the args don't count
 first_run = set()

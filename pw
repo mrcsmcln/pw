@@ -84,7 +84,7 @@ if (args.verbose):
 	print('Password entropy: %d bits' % (symbol_entropy * count))
 	print('Symbol set size: %d symbols' % len(symbols))
 	print('Password size: %d symbols' % count)
-	print()
+	print('')
 	
 for i in range(args.number):
 	print(''.join(choice(symbols) for _ in range(count)))

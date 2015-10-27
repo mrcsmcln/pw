@@ -1,25 +1,27 @@
 #!/usr/bin/python
 
-# TODO: documentation
-
 from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
 from math import ceil, log
 from random import choice
-from string import ascii_lowercase, ascii_uppercase, digits, hexdigits, octdigits, punctuation
+from string import ascii_lowercase, ascii_uppercase,
+                   digits, hexdigits, octdigits, punctuation
 
+# define our symbol sets in an easily-expandable way
 symbol_sets = OrderedDict([
-	('upper', ('u', ascii_uppercase, 'uppercase')),
-	('lower', ('l', ascii_lowercase, 'lowercase')),
-	('digit', ('d', digits, 'decimal digits')),
-	('hex', ('x', hexdigits, 'hex digits')),
-	('oct', ('o', octdigits, 'octal digits')),
-	('punc', ('p', punctuation, 'punctuation')),
-	('spaces', ('s', ' ', 'spaces')),
-	('uri', ('w', ascii_uppercase + ascii_lowercase + digits + '-._~', 'URI unreserved symbols')),
-	('domain', ('n', ascii_lowercase + '-', 'domain name unreserved symbols'))
+    ('upper', ('u', ascii_uppercase, 'uppercase')),
+    ('lower', ('l', ascii_lowercase, 'lowercase')),
+    ('digit', ('d', digits, 'decimal digits')),
+    ('hex', ('x', hexdigits, 'hex digits')),
+    ('oct', ('o', octdigits, 'octal digits')),
+    ('punc', ('p', punctuation, 'punctuation')),
+    ('spaces', ('s', ' ', 'spaces')),
+    ('uri', ('w', ascii_uppercase + ascii_lowercase +
+                  digits + '-._~', 'URI unreserved symbols')),
+    ('domain', ('n', ascii_lowercase + '-', 'domain name unreserved symbols'))
 ])
 
+# define a custom Namespace class so we can see the order of our args
 class OrderedNamespace(Namespace):
     def __init__(self, **kwargs):
         self.__dict__['order'] = []
@@ -28,66 +30,106 @@ class OrderedNamespace(Namespace):
         self.__dict__['order'].append(attr)
         super(OrderedNamespace, self).__setattr__(attr, value)
 
-parser = ArgumentParser(description='pw generates secure passwords based on your specifications. By default, pw generates 256-bit passwords using random printable ASCII characters.')
-parser.add_argument('-b', '--bits', type=int, default=256, help='bits of entropy per password; default is 256', metavar='bits')
-parser.add_argument('-n', '--number', type=int, default=1, help='number of passwords to generate; default is 1', metavar='num')
-parser.add_argument('-s', '--size', type=int, default=0, help='number of symbols per password; overrides bits', metavar='size')
+parser = ArgumentParser(description='pw generates secure passwords based on \
+                        your specifications. By default, pw generates \
+                        256-bit passwords using random printable ASCII \
+                        characters.')
+
+# general generator settings
+parser.add_argument('-b', '--bits', type=int, default=256, metavar='bits',
+                    help='bits of entropy per password; default is 256')
+parser.add_argument('-n', '--number', type=int, default=1, metavar='num', 
+                    help='number of passwords to generate; default is 1')
+parser.add_argument('-s', '--size', type=int, default=0, metavar='size',
+                    help='number of symbols per password; overrides bits')
+
+# add symbol set adders
 for name, (code, symbol_set, friendly) in symbol_sets.items():
-	parser.add_argument('-a%s' % code, '--add-%s' % name, action='store_true', help='add %s to the set' % friendly)
+    parser.add_argument('-a%s' % code, '--add-%s' % name,
+                        action='store_true',
+                        help='add %s to the set' % friendly)
+
+# add symbol set removers
 for name, (code, symbol_set, friendly) in symbol_sets.items():
-	parser.add_argument('-r%s' % code, '--remove-%s' % name, action='store_true', help='remove %s from the set' % friendly)
-parser.add_argument('-ac', '--add-custom', action='append', metavar='symbols', help='add custom symbols to the set')
-parser.add_argument('-rc', '--remove-custom', action='append', metavar='symbols', help='remove custom symbols to the set')
-parser.add_argument('-e', '--empty', action='store_true')
-parser.add_argument('-v', '--verbose', action='store_true', help='enable verbose logging')
+    parser.add_argument('-r%s' % code, '--remove-%s' % name,
+                        action='store_true',
+                        help='remove %s from the set' % friendly)
+
+# custom symbol set adders and removers
+parser.add_argument('-ac', '--add-custom',
+                    action='append', metavar='symbols',
+                    help='add custom symbols to the set')
+parser.add_argument('-rc', '--remove-custom',
+                    action='append', metavar='symbols',
+                    help='remove custom symbols to the set')
+
+# miscellaneous generator settings
+parser.add_argument('-e', '--empty', action='store_true',
+                    help='empty the set')
+parser.add_argument('-v', '--verbose', action='store_true',
+                    help='enable verbose logging')
 
 args = parser.parse_args(None, OrderedNamespace())
 
 if args.empty:
-	symbols = ''
+    symbols = ''
 else:
-	symbols = ascii_uppercase + ascii_lowercase + digits + punctuation + ' '
+    # default symbol set
+    symbols = ascii_uppercase + ascii_lowercase +
+              digits + punctuation + ' '
 
+# the first run through the args don't count
 first_run = set()
 
+# loop through the args
 for arg in args.order:
-	if arg not in first_run:
-		first_run.add(arg)
-		continue
-	if arg.startswith('add'):
-		if arg == 'add_custom':
-			if args.add_custom:
-				symbols += args.add_custom.pop(0)
-		else:
-			symbols += symbol_sets[arg[4:]][1]
-	elif arg.startswith('remove'):
-		if arg == 'remove_custom':
-			if args.remove_custom:
-				remove_custom = args.remove_custom.pop(0);
-				symbols = ''.join(symbol for symbol in symbols if symbol not in remove_custom)
-		else:
-			symbols = ''.join(symbol for symbol in symbols if symbol not in symbol_sets[arg[7:]][1])
+    # if it's the first time through, we don't really do anything
+    if arg not in first_run:
+        first_run.add(arg)
+        continue
 
+    # handle adding and removing of symbol sets
+    if arg.startswith('add'):
+        if arg == 'add_custom':
+            if args.add_custom:
+                symbols += args.add_custom.pop(0)
+        else:
+            symbols += symbol_sets[arg[4:]][1]
+    elif arg.startswith('remove'):
+        if arg == 'remove_custom':
+            if args.remove_custom:
+                remove_custom = args.remove_custom.pop(0);
+                symbols = ''.join(symbol for symbol in symbols
+                                  if symbol not in remove_custom)
+        else:
+            symbols = ''.join(symbol for symbol in symbols
+                              if symbol not in symbol_sets[arg[7:]][1])
+
+# make sure we actually have symbols to print
 if len(symbols) == 0:
-	print('No symbols were allowed, so no password was generated.')
-	exit(1)
+    print('No symbols were allowed, so no password was generated.')
+    exit(1)
 
+# calculate the symbol entropy
 symbol_entropy = log(len(symbols), 2)
-	
-if args.size != 0:
-	count = args.size
-elif symbol_entropy == 0:
-	print('The symbol entropy was zero, so no password was generated.')
-	exit(1)
-else:
-	count = int(ceil(args.bits / symbol_entropy))
 
+# get the size of the password and do some error checking
+if args.size != 0:
+    count = args.size
+elif symbol_entropy == 0:
+    print('The symbol entropy was zero, so no password was generated.')
+    exit(1)
+else:
+    count = int(ceil(args.bits / symbol_entropy))
+
+# verbose logging
 if (args.verbose):
-	print('Symbol entropy: %f bits' % symbol_entropy)
-	print('Password entropy: %d bits' % (symbol_entropy * count))
-	print('Symbol set size: %d symbols' % len(symbols))
-	print('Password size: %d symbols' % count)
-	print('')
-	
+    print('Symbol entropy: %f bits' % symbol_entropy)
+    print('Password entropy: %d bits' % (symbol_entropy * count))
+    print('Symbol set size: %d symbols' % len(symbols))
+    print('Password size: %d symbols' % count)
+    print('')
+    
+# finally, generate the password
 for i in range(args.number):
-	print(''.join(choice(symbols) for _ in range(count)))
+    print(''.join(choice(symbols) for _ in range(count)))

@@ -82,7 +82,7 @@ EIvduVEh#d &7V5e^F&AQ4X%B2OTwSCqNT&3lwoGvk
 
 #### Removing custom symbols
 
-Let's say we've got an airline that will allow us to use any punctuation *except* `[`, `]`, `(`, and `)`. Dead simple:
+Let's say we've got an airline that lets us use any punctuation *except* `[`, `]`, `(`, and `)`. Dead simple:
 
 ```
 pw --remove-custom '[]()'
@@ -120,6 +120,8 @@ pw --size 16
 @j'<lE\;=`Jwh=R.
 ```
 
+You should only specify a size when it's *absolutely necessary*.
+
 #### Generating multiple passwords
 
 Additionally, if you want to generate more than one password, you can do that as well:
@@ -135,7 +137,7 @@ M(!D53+HIOL'e,xT"D2SBf;tM}H%@hvb#}X3M,T
 
 #### Printing additional information
 
-And, if you would like to see additional information you can opt in:
+And, if you would like to see additional information you can enable verbose logging:
 
 ```
 pw --verbose

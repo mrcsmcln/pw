@@ -105,6 +105,9 @@ for arg in args.order:
             symbols = ''.join(symbol for symbol in symbols
                               if symbol not in symbol_sets[arg[7:]][1])
 
+# remove duplicate symbols
+symbols = ''.join(set(symbols))
+
 # make sure we actually have symbols to print
 if len(symbols) == 0:
     print('No symbols were allowed, so no password was generated.')
